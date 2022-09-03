@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Shopping List</title>
+</head>
+<body>
+    <main>
+        <section class="newItemEntry">
+            <form id = "itemEntryForm" action="">
+                <label for="newItem">Add Item</label>
+                <input type="text" id="newItem" size="40" autocomplete="off" placeholder="Add Item">
+                <!--tabindex is for accessibility-->
+                <button id="addItem" class="button" title="Add Item">
+                    +
+                </button>
+            </form>
+        </section>
+        <section class="listContainer">
+            <div class="listTitle">
+                <h1>Grocery Shopping List</h1>
+                <button id="clearItems" class="button" title="Clear List">
+                    Clear
+                </button>
+            </div>
+            <hr>
+            <div id="listItems">
+                <div class="item">
+                    <input type="checkbox" id="1"><label for="1">Eggs</label>
+                    <input type="checkbox" id="2"><label for="2">Bread</label>
+                    <input type="checkbox" id="3"><label for="1">Milk</label>
+                </div>
+            </div>            
+        </section>
+    </main>
+</body>
+</html>
