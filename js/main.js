@@ -11,13 +11,40 @@ document.addEventListener("readystatechange", (event) => {
 });
 
 const initApp = () => {
+    // Listeners
+    const itemEntryForm = document.getElementById("itemEntryForm");
+    itemEntryForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        processSubmission();
+    });
+
+    const clearItems = document.getElementById("clearItems")
+    clearItems.addEventListener("click", (event) => {
+        toDoList.clearList();
+        updatePersistentData(toDoList.getList());
+        refreshThePage();
+    })
+
+    // Loading list object
+    loadListObject();
     refreshThePage();
+};
+
+const loadListObject = () => {
+    const storedList = localStorage.getItem("myItems");
+    if (typeof storedList !== "string") return;
+    const parsedList = JSON.parse(storedList);
+    parsedList.forEach((itemObj) => {
+        const newToDoItem = createNewItem(itemObj._id, itemObj._item);
+        toDoList.addItemtoList(newToDoItem);
+      });
 };
 
 const refreshThePage = () => {
     clearListDisplay();
     renderList();
     setFocusOnItemEntry();
+    clearItemEntryField();
 };
 
 const clearListDisplay = () => {
@@ -54,4 +81,56 @@ const buildListItem = (item) => {
     div.appendChild(label);
     const container = document.getElementById("listItems");
     container.appendChild(div);
+};
+
+const addClickListenerToCheckbox = (checkbox) => {
+    checkbox.addEventListener("click", (event) => {
+        toDoList.removeItemFromList(checkbox.id);
+        updatePersistentData(toDoList.getList());
+        setTimeout(() => {
+            refreshThePage();
+        }, 400);
+    });
+};
+
+const setFocusOnItemEntry = () => {
+    document.getElementById("newItem").focus();
+};
+
+const processSubmission = () => {
+    const newEntryText = getNewEntry();
+    if (!newEntryText.length) return;
+    const nextItemId = calcNextItemId();
+    const toDoItem = createNewItem(nextItemId, newEntryText);
+    toDoList.addItemtoList(toDoItem);
+    updatePersistentData(toDoList.getList());
+    refreshThePage();
+};
+
+const getNewEntry = () => {
+    return document.getElementById("newItem").value.trim();
+};
+
+const calcNextItemId = () => {
+    let nextItemId = 1;
+    const list = toDoList.getList();
+    if (list.length > 0) {
+        nextItemId = list[list.length - 1].getId() + 1;
+    }
+    return nextItemId;
+}
+
+const createNewItem = (itemId, itemText) => {
+    const toDo = new ToDoItem();
+    toDo.setId(itemId);
+    toDo.setItem(itemText);
+    return toDo;
+}
+
+const clearItemEntryField = () => {
+    document.getElementById("newItem").value = "";
+};
+
+const updatePersistentData = (listArray) => {
+    localStorage.setItem("myItems", JSON.stringify(listArray))
 }
